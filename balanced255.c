@@ -80,6 +80,21 @@ balanced255 new255(int k) {
     return head;
 }
 
+static inline void clean255(balanced255 head, balanced255 tail) {
+    #if DEBUG > 9000
+    if (*tail != -128) {
+        fprintf(stderr, "not starting at the tail of the balanced255 number\n");
+        return;
+    }
+    #endif
+    while (--tail >= head) {
+        if (*tail == 0)
+            *tail = -128;
+        else
+            break;
+    }
+}
+
 balanced255 add255(balanced255 a, balanced255 b) {
     int alloc;
     {
@@ -119,7 +134,16 @@ balanced255 add255(balanced255 a, balanced255 b) {
         CARRY_NEXT_DIGIT(carry, result);
     }
     *result = -128;
+    clean255(head, result);
     return head;
+}
+
+int is_nonzero255(balanced255 a) {
+    while (*a != -128) {
+        if (*a++ != 0)
+            return 1;
+    }
+    return 0;
 }
 
 int is_zero255(balanced255 a) {

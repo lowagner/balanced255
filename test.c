@@ -35,6 +35,8 @@ int test_add255() {
     print255(x2);
     balanced255 x3 = add255(x1, x2);
     long long int result = value255(x3);
+    printf("internal representation of x3 = x1+x2, should be equal to %d:\n ", value1+value2);
+    print255(x3);
     printf("recalculated result: %lld\n", result);
     free255(x3);
     free255(x2);
@@ -58,6 +60,8 @@ int test_add_to_zero255() {
     printf("internal representation of x2:\n ");
     print255(x2);
     balanced255 x3 = add255(x1, x2);
+    printf("internal representation of x3 = x1+x2:\n ");
+    print255(x3);
     int result = is_zero255(x3);
     free255(x3);
     free255(x2);
