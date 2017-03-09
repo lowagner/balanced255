@@ -96,15 +96,10 @@ static inline int8_t carry_next_digit255(int *carry) {
 
 balanced255 new255(int k) {
     int carry = k;
-    int alloc;
-    if (k == 0)
-        alloc = 2;
-    else {
-        alloc = 1;
-        while (k) {
-            ++alloc;
-            carry_next_digit255(&k);
-        }
+    int alloc = 1;
+    while (k) {
+        ++alloc;
+        carry_next_digit255(&k);
     }
     balanced255 head = allocate255(alloc); 
     int8_t *tail = head;
@@ -178,22 +173,16 @@ balanced255 add255(balanced255 a, balanced255 b) {
 
 void increment255(balanced255 *aptr) {
     balanced255 a = *aptr;
-    if (*a == -128) {
-        // a was zero, but we have two bytes to work with (see new255)
-        *a = 1;
-        *++a = -128;
-        return;
-    }
     // worst case cascade will require a realloc
     //  127  127  127  127  127 -128
     // -127 -127 -127 -127 -127 1   -128
     int alloc=2; 
-    do {
+    while ((*a) != -128) {
         if (++(*a) != -128) 
             return;
         *a++ = -127;
         ++alloc;
-    } while ((*a) != -128);
+    }
     
     // need to reallocate here.
     a = reallocate255(aptr, alloc); // value of aptr could be different after reallocation
@@ -203,23 +192,16 @@ void increment255(balanced255 *aptr) {
 
 void decrement255(balanced255 *aptr) {
     balanced255 a = *aptr;
-    if (*a == -128) {
-        // a was zero, we always have two bytes to work with (see new255)
-        *a = -1;
-        *++a = -128;
-        return;
-    } 
-
     // worst case cascade will require a realloc
     // -127 -127 -127 -127 -127 -128
     //  127  127  127  127  127 -1 -128
     int alloc=2; 
-    do {
+    while ((*a) != -128) {
         if (--(*a) != -128) 
             return;
         *a++ = 127;
         ++alloc;
-    } while ((*a) != -128);
+    }
     
     // need to reallocate here.
     a = reallocate255(aptr, alloc); // value of aptr could be different after reallocation
