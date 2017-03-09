@@ -44,6 +44,14 @@ int test_add255() {
     return (result != value1+value2);
 }
 
+int test_nonzero255() {
+    balanced255 x = new255(-12534234);
+    int result = is_nonzero255(x); 
+    print255(x);
+    free255(x);
+    return (result == 0);
+}
+
 int test_zero255() {
     balanced255 x = new255(0);
     int result = is_zero255(x); 
@@ -117,6 +125,7 @@ int test_zero_increment255() {
 int main(int narg, char **args) {
     TEST(new255);
     TEST(add255);
+    TEST(nonzero255);
     TEST(zero255);
     TEST(add_to_zero255);
     TEST(allocation255);
