@@ -16,49 +16,53 @@ using little-endian ordering, this has the numeric value `0*1 + 5*255 + -1*(255*
 
 ## balanced255 code features
 
-* manual memory management:  if you create a balanced255 number via `new255(int initial_value)`,
-`add255(balanced255 a, balanced255 b)`, or `copy255(balanced255 a)`, for instance like this:
+* manual memory management:  if you create a balanced255 number via any of the following functions:
+```
+    balanced255 new255(int initial_value)
+    balanced255 add255(balanced255 a, balanced255 b)
+    balanced255 copy255(balanced255 a)
+```
 
-    balanced255 c = new255(5);
-    // or
-    balanced255 c = add255(a, b);
-    // or
-    balanced255 c = copy255(b);
-
-you will need to free it when you are done using it via `void free255(balanced255 c)`, i.e.,
-    
-    free255(c);
+you will need to free it when you are done using it via 
+```
+    void free255(balanced255 c)
+```
 
 _for this reason, you should never use `new255` for a temporary balanced255 inside an argument._
 
 * check zero/nonzero:  
-
+```
     int is_zero255(balanced255 x)
     int is_nonzero255(balanced255 x)
+```
 
 * determine sign:  in general, balanced numbers are positive or negative based on
 the positivity/negativity of their most significant digit, which is what these functions check:
-
+```
     int is_positive255(balanced255 x)
     int is_negative255(balanced255 x)
+```
 
 * increment/decrement: 
-    
+```
     void increment255(balanced255 x)
     void decrement255(balanced255 x)
+```
 
 * determine the length of the array which makes up the balanced255 number:
-    
+```
     int length255(balanced255 x)
+```
 
 * and of course you can print the array at any time, or print to file:
-
+```
     void print255(balanced255 x)
     void fprint255(FILE *f, balanced255 x)
+```
 
 
 ## TODO
 
 * += algorithm
 * implement a decent multiplication algorithm, and \*= too.
-* print\_value255 for very large numbers
+* print\_decimal255 for very large numbers
