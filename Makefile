@@ -10,11 +10,11 @@ DEBUGLEVEL_G=9001
 CFLAGS_COMMON=-std=c11 $(DEFINES:%=-D%)
 LDFLAGS=
 # source c/cc files with headers:
-HEADED=balanced255
+HEADED=balanced255 math255 allocate255 print255
 # source cc files without headers:
 NON_HEADED=
 # also add any other remaining headers to this guy:
-REMAINING_HEADERS=config
+REMAINING_HEADERS=config255
 
 # hopefully no need to modify past this point
 CFLAGS=$(CFLAGS_COMMON) -DDEBUG=$(DEBUGLEVEL)
@@ -68,7 +68,7 @@ clean: clean-g clean-docs
 	rm -fr build/$(SYS)
 	rm -f *.$(EXECUTABLE)
 	rm -f *.$(EXECUTABLE).$(SYS)
-	rmdir build
+	rmdir build ||:
 
 clean-docs:
 	rm -rf docs

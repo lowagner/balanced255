@@ -9,3 +9,6 @@
 #define likely(expr) (expr)
 #define unlikely(expr) (expr)
 #endif
+
+typedef int8_t *balanced255;
+typedef long long int big_int;
