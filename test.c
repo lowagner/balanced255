@@ -28,9 +28,9 @@ int test_add255() {
     int value1 = 110001;
     int value2 = -5342159;
     balanced255 x1 = new255(value1);
-    balanced255 x2 = new255(value2);
     printf("internal representation of x1, should be equal to %d:\n ", value1);
     print255(x1);
+    balanced255 x2 = new255(value2);
     printf("internal representation of x2, should be equal to %d:\n ", value2);
     print255(x2);
     balanced255 x3 = add255(x1, x2);
@@ -78,12 +78,52 @@ int test_allocation255() {
     return (length != 3);
 }
 
+int test_decrement255() {
+    balanced255 x = new255(-8290687);
+    printf("internal representation of x:\n ");
+    print255(x);
+    decrement255(&x);
+    printf("internal representation of x after decrement:\n ");
+    print255(x);
+    long long int value = value255(x);
+    free255(x);
+    return (value != -8290688);
+}
+
+int test_increment255() {
+    balanced255 x = new255(127);
+    printf("internal representation of x:\n ");
+    print255(x);
+    increment255(&x);
+    printf("internal representation of x after increment:\n ");
+    print255(x);
+    long long int value = value255(x);
+    free255(x);
+    return (value != 128);
+}
+
+int test_zero_increment255() {
+    balanced255 x = new255(0);
+    printf("internal representation of x:\n ");
+    print255(x);
+    increment255(&x);
+    printf("internal representation of x after increment:\n ");
+    print255(x);
+    long long int value = value255(x);
+    free255(x);
+    return (value != 1);
+}
+
 int main(int narg, char **args) {
     TEST(new255);
     TEST(add255);
     TEST(zero255);
     TEST(add_to_zero255);
     TEST(allocation255);
+    TEST(decrement255);
+    TEST(increment255);
+    TEST(zero_increment255);
+    printf("all tests passed, good work and go home.\n");
     return 0;
 }
 
