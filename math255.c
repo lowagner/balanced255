@@ -2,6 +2,12 @@
 #include "allocate255.h"
 #include "unsafe255.h"
 
+static inline int max(int a, int b) {
+    if (a > b)
+        return a;
+    return b;
+}
+
 int is_zero255(balanced255 a) {
     while (*a != -128) {
         if (*a++ != 0)
@@ -32,6 +38,17 @@ int is_negative255(balanced255 a) {
     while (*(a+1) != -128)
         ++a;
     return (*a) < 0;
+}
+
+int are_equal255(balanced255 a, balanced255 b) {
+    while (1) {
+        if (*a == -128)
+            return is_zero255(b);
+        if (*b == -128)
+            return is_zero255(a);
+        if (*a++ != *b++)
+            return 0;
+    }
 }
 
 int8_t carry_next_digit255(int *carry) {

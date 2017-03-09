@@ -122,6 +122,43 @@ int test_zero_increment255() {
     return (value != 1);
 }
 
+int test_equality255() {
+    balanced255 x = new255(1005);
+    balanced255 y1 = new255(1000);
+    balanced255 y2 = new255(5);
+    balanced255 y = add255(y1, y2);
+    int result = are_equal255(x, y);
+    free255(y);
+    free255(y2);
+    free255(y1);
+    free255(x);
+    return (result != 1);
+}
+
+int test_multiply255() {
+    int value1 = -510;
+    int value2 = 150517;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1:\n ");
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2:\n ");
+    print255(x2);
+    printf("internal representation of balanced255(value1*value2):\n ");
+    balanced255 x3 = new255(value1*value2);
+    print255(x3);
+    printf("internal representation of x1*x2:\n ");
+    printf(" TODO THIS IS NOT IMPLEMENTED:\n "); // TODO: make this next one multiply255(x1, x2)
+    balanced255 x4 = new255(value1*value2);
+    print255(x4);
+    int result = are_equal255(x3, x4);
+    free255(x4);
+    free255(x3);
+    free255(x2);
+    free255(x1);
+    return (result == 0);
+}
+
 int main(int narg, char **args) {
     TEST(new255);
     TEST(add255);
@@ -132,6 +169,8 @@ int main(int narg, char **args) {
     TEST(decrement255);
     TEST(increment255);
     TEST(zero_increment255);
+    TEST(equality255);
+    TEST(multiply255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }
