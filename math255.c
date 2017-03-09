@@ -1,5 +1,6 @@
 #include "balanced255.h"
 #include "allocate255.h"
+#include "unsafe255.h"
 
 int is_zero255(balanced255 a) {
     while (*a != -128) {
@@ -53,49 +54,26 @@ int8_t carry_next_digit255(int *carry) {
     return sign*digit;
 }
 
+int get_required_space_add255(balanced255 a, balanced255 b) {
+    return max(length255(a), length255(b)) + 1;
+}
 
 balanced255 add255(balanced255 a, balanced255 b) {
-    int alloc;
-    {
-        const int len_a = length255(a);
-        const int len_b = length255(b);
-        if (len_a > len_b) {
-            if (len_b <= 1)
-                return copy255(a);
-            alloc = len_a + 1;
-        } else {
-            if (len_b <= 1)
-                return copy255(a);
-            alloc = len_b + 1;
-        }
-    }
-    balanced255 head = allocate255(alloc);
-    int8_t *tail = head;
+    balanced255 head = allocate255(get_required_space_add255(a, b));
+    balanced255 tail = head;
     int carry = 0;
     while (1) {
-        if (*b == -128)
-            break;
-        else if (*a == -128) {
-            a = b; // could swap, but we don't consider b any further below
-            break;
+        if (*b == -128) {
+            unsafe255_from255_plus_int(tail, a, carry);
+            return head;
+        }
+        if (*a == -128) {
+            unsafe255_from255_plus_int(tail, b, carry);
+            return head;
         }
         carry += (int8_t)(*a++) + (int8_t)(*b++); 
         *tail++ = carry_next_digit255(&carry);
     }
-    // finish adding a to the vector, b is done for
-    while (*a != -128) {
-        carry += (int8_t)(*a++); 
-        *tail++ = carry_next_digit255(&carry);
-    }
-    while (carry) { // one final piece
-        #if DEBUG > 9000
-        printf("final carry %d, should only happen once...\n", carry);
-        #endif
-        *tail++ = carry_next_digit255(&carry);
-    }
-    *tail = -128;
-    clean255(head, tail);
-    return head;
 }
 
 void increment255(balanced255 *aptr) {
@@ -134,5 +112,9 @@ void decrement255(balanced255 *aptr) {
     a = reallocate255(aptr, alloc); // value of aptr could be different after reallocation
     a[alloc-2] = -1;
     a[alloc-1] = -128;
+}
+
+int get_required_space_multiply255(balanced255 a, balanced255 b) {
+    return length255(a) + length255(b);
 }
 

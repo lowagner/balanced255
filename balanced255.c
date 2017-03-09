@@ -1,5 +1,6 @@
 #include "balanced255.h"
 #include "allocate255.h"
+#include "unsafe255.h"
 #include <string.h> // memcpy
 #include <stdlib.h> // free
 
@@ -29,15 +30,9 @@ balanced255 new255(int k) {
         ++alloc;
         carry_next_digit255(&k);
     }
-    balanced255 head = allocate255(alloc); 
-    int8_t *tail = head;
-    while (carry)
-        *tail++ = carry_next_digit255(&carry);
-    *tail = -128;
-    #if DEBUG > 9000
-    fprintf(stderr, "used/allocated = %d/%d\n", length255(head), alloc);
-    #endif
-    return head;
+    balanced255 a = allocate255(alloc); 
+    unsafe255_from_int(a, carry);
+    return a;
 }
 
 balanced255 copy255(balanced255 a) {
