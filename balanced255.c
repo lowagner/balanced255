@@ -5,13 +5,21 @@
 #include <stdlib.h> // free
 
 int length255(balanced255 a) {
+    // trim zeroes from back of a
     int count=1; // include the -128 byte as part of the length.
-    while (*a++ != -128)
+    int delta_nonzero_index = 0;
+    while (*a != -128) {
+        if (*a++)
+            delta_nonzero_index = 0;
+        else
+            ++delta_nonzero_index;
         ++count;
-    return count;
+    }
+    a[-delta_nonzero_index] = -128; 
+    return count - delta_nonzero_index;
 }
 
-long long int value255(balanced255 a) {
+big_int value255(balanced255 a) {
     if (*a == -128)
         return 0;
     long long int power = 1;

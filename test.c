@@ -1,4 +1,5 @@
 #include "balanced255.h"
+#include "allocate255.h"
 
 #define TEST(x) \
     if (test_##x()) { \
@@ -148,8 +149,64 @@ int test_multiply255() {
     balanced255 x3 = new255(value1*value2);
     print255(x3);
     printf("internal representation of x1*x2:\n ");
-    printf(" TODO THIS IS NOT IMPLEMENTED:\n "); // TODO: make this next one multiply255(x1, x2)
-    balanced255 x4 = new255(value1*value2);
+    balanced255 x4 = multiply255(x1, x2);
+    print255(x4);
+    int result = are_equal255(x3, x4);
+    free255(x4);
+    free255(x3);
+    free255(x2);
+    free255(x1);
+    return (result == 0);
+}
+
+int test_another_multiply255() {
+    int value1 = -128;
+    int value2 = 100;
+    balanced255 x1 = new255(value1);
+    increment255(&x1); ++value1;
+    printf("initial internal representation of x1:\n ");
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2:\n ");
+    print255(x2);
+    printf("internal representation of balanced255(value1*value2):\n ");
+    balanced255 x3 = new255(value1*value2);
+    print255(x3);
+    printf("internal representation of x1*x2:\n ");
+    balanced255 x4 = multiply255(x1, x2);
+    print255(x4);
+    int result = are_equal255(x3, x4);
+    free255(x4);
+    free255(x3);
+    free255(x2);
+    free255(x1);
+    return (result == 0);
+}
+
+int test_drop_tail255() {
+    balanced255 x1 = allocate255(4);
+    balanced255 x2 = allocate255(4);
+    x1[0] = 0;
+    x1[1] = -55;
+    x1[2] = 5;
+    x1[3] = -128;
+    x2[0] = 0;
+    x2[1] = 0;
+    x2[2] = 0;
+    x2[3] = -128;
+    int value1 = value255(x1);
+    int value2 = value255(x2);
+    printf("initial internal representation of x1 = %d:\n ", value1);
+    print255(x1);
+    printf("internal representation of x2 = %d:\n ", value2);
+    print255(x2);
+    printf("checking for zero: %d\n", length255(x2));
+    print255(x2);
+    printf("internal representation of balanced255(value1*value2):\n ");
+    balanced255 x3 = new255(value1*value2);
+    print255(x3);
+    printf("internal representation of x1*x2:\n ");
+    balanced255 x4 = multiply255(x1, x2);
     print255(x4);
     int result = are_equal255(x3, x4);
     free255(x4);
@@ -171,6 +228,8 @@ int main(int narg, char **args) {
     TEST(zero_increment255);
     TEST(equality255);
     TEST(multiply255);
+    TEST(another_multiply255);
+    TEST(drop_tail255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }

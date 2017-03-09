@@ -1,6 +1,7 @@
 #include "balanced255.h"
 #include "allocate255.h"
 #include "unsafe255.h"
+#include <string.h>
 
 static inline int max(int a, int b) {
     if (a > b)
@@ -135,3 +136,57 @@ int get_required_space_multiply255(balanced255 a, balanced255 b) {
     return length255(a) + length255(b);
 }
 
+balanced255 multiply255(balanced255 a, balanced255 b) {
+    // grade school algorithm follows...
+    int head_length;
+    balanced255 partial;
+    {
+        int len_a, len_b;
+        len_a = length255(a);
+        len_b = length255(b);
+        head_length = len_a + len_b;
+        if (len_a < len_b) {
+            // swap a<=>b, put the larger sized element first.
+            balanced255 c = b;
+            b = a;
+            a = c;
+            partial = allocate255(len_b+1);
+        } else {
+            partial = allocate255(len_a+1);
+        }
+    }
+    if (is_zero255(b)) {
+        balanced255 result = allocate255(1);
+        *result = -128;
+        return result;
+    }
+    balanced255 head = allocate255(head_length);
+    memset(head, 0, head_length*sizeof(int8_t));
+    balanced255 tail = head;
+    while (*b != -128) {
+        balanced255 a_tail = a;
+        int carry = 0;
+        #if DEBUG > 9000
+        printf("multiplying in %d:\n ", (int)(*b));
+        #endif
+        if (*b) {
+            balanced255 partial_tail = partial;
+            while (1) {
+                if (*a_tail == -128) {
+                    unsafe255_from_int(partial_tail, carry);
+                    break;
+                }
+                carry += (int8_t)(*a_tail++) * (int8_t)(*b);
+                *partial_tail++ = carry_next_digit255(&carry);
+            }
+            #if DEBUG > 9000
+            printf("adding partial...\n  ");
+            print255(partial);
+            #endif
+            unsafe255_add255(tail, partial);
+        }
+        ++b; 
+        ++tail;
+    }
+    return head;
+}

@@ -18,6 +18,7 @@ balanced255 reallocate255(balanced255 *a, int length) {
 }
 
 void clean255(balanced255 head, balanced255 tail) {
+    // clear trailing zeroes
     // TODO: realloc?
     #if DEBUG > 9000
     if (*tail != -128) {
@@ -25,10 +26,11 @@ void clean255(balanced255 head, balanced255 tail) {
         return;
     }
     #endif
-    while (--tail >= head) {
-        if (*tail == 0)
-            *tail = -128;
-        else
+    while (--tail > head)
+    {
+        if (*tail != 0) {
+            *(tail+1) = -128;
             break;
+        }
     }
 }
