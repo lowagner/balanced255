@@ -113,7 +113,7 @@ int get_required_space_multiply255(balanced255 a, balanced255 b) {
 balanced255 multiply255(balanced255 a, balanced255 b) {
     // grade school algorithm follows...
     int head_length;
-    balanced255 partial;
+    balanced255 partial_sum;
     {
         int len_a, len_b;
         len_a = length255(a);
@@ -124,9 +124,9 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
             balanced255 c = b;
             b = a;
             a = c;
-            partial = allocate255(len_b+1);
+            partial_sum = allocate255(len_b+1);
         } else {
-            partial = allocate255(len_a+1);
+            partial_sum = allocate255(len_a+1);
         }
     }
     if (is_zero255(b)) {
@@ -136,21 +136,6 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
     }
     balanced255 head = allocate255(head_length);
     memset(head, 0, head_length*sizeof(int8_t));
-    balanced255 tail = head;
-    while (*b != -128) {
-        #if DEBUG > 9000
-        printf("multiplying in %d:\n ", (int)(*b));
-        #endif
-        if (*b) {
-            unsafe255_multiply255_with_int(partial, a, *b);
-            #if DEBUG > 9000
-            printf("adding partial...\n  ");
-            print255(partial);
-            #endif
-            unsafe255_add255(tail, partial);
-        }
-        ++b; 
-        ++tail;
-    }
+    unsafe255_gradeschool_multiply_nonzero255(head, partial_sum, a, b);
     return head;
 }

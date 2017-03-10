@@ -72,3 +72,23 @@ void unsafe255_multiply255_with_int(balanced255 a, balanced255 b, int multiplier
         *a++ = carry_next_digit255(&carry);
     }
 }
+
+void unsafe255_gradeschool_multiply_nonzero255(
+    balanced255 result, balanced255 partial_sum, balanced255 a, balanced255 b)
+{
+    while (*b != -128) {
+        #if DEBUG > 9000
+        printf("multiplying in %d:\n ", (int)(*b));
+        #endif
+        if (*b) {
+            unsafe255_multiply255_with_int(partial_sum, a, *b);
+            #if DEBUG > 9000
+            printf("adding partial_sum...\n  ");
+            print255(partial_sum);
+            #endif
+            unsafe255_add255(result, partial_sum);
+        }
+        ++b;
+        ++result;
+    }
+}
