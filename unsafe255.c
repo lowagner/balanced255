@@ -38,3 +38,37 @@ void unsafe255_add255(balanced255 a, balanced255 b) {
     }
 }
 
+void unsafe255_from_negative255_plus_int(balanced255 a, balanced255 b, int carry) {
+    // a is "zero", add -b and carry together to make the rest of a.  a should be preallocated.
+    while (*b != -128) {
+        carry -= (int8_t)*b++;
+        *a++ = carry_next_digit255(&carry);
+    }
+    unsafe255_from_int(a, carry);
+}
+
+void unsafe255_subtract255(balanced255 a, balanced255 b) {
+    // add b to a.  a should be properly allocated to go as large as max(length255(a), length255(b)) + 1.
+    int carry = 0;
+    while (1) {
+        if (*b == -128)
+            return unsafe255_add_int(a, carry);
+        if (*a == -128)
+            return unsafe255_from_negative255_plus_int(a, b, carry);
+        carry += (int8_t)(*a) - (int8_t)(*b++); 
+        *a++ = carry_next_digit255(&carry);
+    }
+}
+
+void unsafe255_multiply255_with_int(balanced255 a, balanced255 b, int multiplier) {
+    // multiply b with multiplier, put into a (preallocated)
+    int carry = 0;
+    while (1) {
+        if (*b == -128) {
+            unsafe255_from_int(a, carry);
+            break;
+        }
+        carry += (int8_t)(*b++) * multiplier;
+        *a++ = carry_next_digit255(&carry);
+    }
+}

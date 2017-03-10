@@ -94,6 +94,24 @@ balanced255 add255(balanced255 a, balanced255 b) {
     }
 }
 
+balanced255 subtract255(balanced255 a, balanced255 b) {
+    balanced255 head = allocate255(get_required_space_add255(a, b));
+    balanced255 tail = head;
+    int carry = 0;
+    while (1) {
+        if (*b == -128) {
+            unsafe255_from255_plus_int(tail, a, carry);
+            return head;
+        }
+        if (*a == -128) {
+            unsafe255_from_negative255_plus_int(tail, b, carry);
+            return head;
+        }
+        carry += (int8_t)(*a++) - (int8_t)(*b++); 
+        *tail++ = carry_next_digit255(&carry);
+    }
+}
+
 void increment255(balanced255 *aptr) {
     balanced255 a = *aptr;
     // worst case cascade will require a realloc
@@ -164,21 +182,11 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
     memset(head, 0, head_length*sizeof(int8_t));
     balanced255 tail = head;
     while (*b != -128) {
-        balanced255 a_tail = a;
-        int carry = 0;
         #if DEBUG > 9000
         printf("multiplying in %d:\n ", (int)(*b));
         #endif
         if (*b) {
-            balanced255 partial_tail = partial;
-            while (1) {
-                if (*a_tail == -128) {
-                    unsafe255_from_int(partial_tail, carry);
-                    break;
-                }
-                carry += (int8_t)(*a_tail++) * (int8_t)(*b);
-                *partial_tail++ = carry_next_digit255(&carry);
-            }
+            unsafe255_multiply255_with_int(partial, a, *b);
             #if DEBUG > 9000
             printf("adding partial...\n  ");
             print255(partial);

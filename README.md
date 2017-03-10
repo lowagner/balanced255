@@ -63,6 +63,6 @@ the positivity/negativity of their most significant digit, which is what these f
 
 ## TODO
 
-* += algorithm
-* implement a decent multiplication algorithm, and \*= too.
+* fast multiplication for larger numbers?
+* \*= algorithm
 * print\_decimal255 for very large numbers

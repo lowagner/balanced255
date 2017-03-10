@@ -45,6 +45,26 @@ int test_add255() {
     return (result != value1+value2);
 }
 
+int test_subtract255() {
+    int value1 = 33401;
+    int value2 = 5306987;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    balanced255 x3 = subtract255(x1, x2);
+    long long int result = value255(x3);
+    printf("internal representation of x3 = x1-x2, should be equal to %d:\n ", value1-value2);
+    print255(x3);
+    printf("recalculated result: %lld\n", result);
+    free255(x3);
+    free255(x2);
+    free255(x1);
+    return (result != value1-value2);
+}
+
 int test_nonzero255() {
     balanced255 x = new255(-12534234);
     int result = is_nonzero255(x); 
@@ -216,9 +236,19 @@ int test_drop_tail255() {
     return (result == 0);
 }
 
+int test_print_decimal255() {
+    int value = 12342342;
+    printf("value is %d\n", value);
+    balanced255 a = new255(value);
+    fprinting255_as_decimal(stdout, a);
+    free255(a);
+    return 0;
+}
+
 int main(int narg, char **args) {
     TEST(new255);
     TEST(add255);
+    TEST(subtract255);
     TEST(nonzero255);
     TEST(zero255);
     TEST(add_to_zero255);
@@ -230,6 +260,7 @@ int main(int narg, char **args) {
     TEST(multiply255);
     TEST(another_multiply255);
     TEST(drop_tail255);
+    TEST(print_decimal255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }

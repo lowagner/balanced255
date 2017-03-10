@@ -5,7 +5,7 @@
 #include <stdlib.h> // free
 
 int length255(balanced255 a) {
-    // trim zeroes from back of a
+    // also trim zeroes from back of a
     int count=1; // include the -128 byte as part of the length.
     int delta_nonzero_index = 0;
     while (*a != -128) {
