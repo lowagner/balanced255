@@ -1,5 +1,6 @@
 #pragma once
 #include "config255.h"
+#include "comparisons255.h"
 #include "print255.h"
 #include "math255.h"
 

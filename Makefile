@@ -10,7 +10,7 @@ DEBUGLEVEL_G=9001
 CFLAGS_COMMON=-std=c11 $(DEFINES:%=-D%)
 LDFLAGS=
 # source c/cc files with headers:
-HEADED=balanced255 math255 allocate255 print255 unsafe255
+HEADED=balanced255 math255 allocate255 print255 unsafe255 comparisons255
 # source cc files without headers:
 NON_HEADED=
 # also add any other remaining headers to this guy:

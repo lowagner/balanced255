@@ -3,15 +3,15 @@
 
 #define TEST(x) \
     if (test_##x()) { \
-        printf("test_"#x" failed\n"); return 1; \
+        printf("test_"#x" failed\n\n"); return 1; \
     } else \
-        printf("test_"#x" passed\n");
+        printf("test_"#x" passed\n\n");
 
 #define TESTSHOULDFAIL(x) \
     if (test_##x()) \
-        printf("test_"#x" failed, which means it passed. (it was supposed to fail.)\n"); \
+        printf("test_"#x" failed, which means it passed. (it was supposed to fail.)\n\n"); \
     else { \
-        printf("test_"#x" passed, which means it failed.  it should have failed.\n"); return 1;\
+        printf("test_"#x" passed, which means it failed.  it should have failed.\n\n"); return 1;\
     }
 
 int test_new255() {
@@ -61,9 +61,9 @@ int test_compare_less255() {
     return 0;
 }
 
-int test_compare_more255() {
-    int value1 = 14;
-    int value2 = 100234;
+int test_compare_another_less255() {
+    int value1 = -6293455;
+    int value2 = 1234;
     balanced255 x1 = new255(value1);
     printf("internal representation of x1, should be equal to %d:\n ", value1);
     print255(x1);
@@ -71,6 +71,107 @@ int test_compare_more255() {
     printf("internal representation of x2, should be equal to %d:\n ", value2);
     print255(x2);
     int result = compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != -1)
+        return 1;
+    return 0;
+}
+
+int test_compare_more255() {
+    int value1 = 100234;
+    int value2 = 14;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != 1)
+        return 1;
+    return 0;
+}
+
+int test_abs_compare255() {
+    int value1 = -100234;
+    int value2 = 100234;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = abs_compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != 0)
+        return 1;
+    return 0;
+}
+
+int test_same_sign_abs_compare255() {
+    int value1 = 100234;
+    int value2 = 500234;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = abs_compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != -1)
+        return 1;
+    return 0;
+}
+
+int test_another_abs_compare255() {
+    balanced255 x1 = allocate255(4);
+    balanced255 x2 = allocate255(4);
+    x1[0] = 0;
+    x1[1] = 55;
+    x1[2] = 5;
+    x1[3] = -128;
+    x2[0] = 0;
+    x2[1] = 45;
+    x2[2] = -5;
+    x2[3] = -128;
+    int value1 = value255(x1);
+    int value2 = value255(x2);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = abs_compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != 1)
+        return 1;
+    return 0;
+}
+
+int test_third_abs_compare255() {
+    balanced255 x1 = allocate255(4);
+    balanced255 x2 = allocate255(4);
+    x1[0] = 0;
+    x1[1] = 55;
+    x1[2] = 5;
+    x1[3] = -128;
+    x2[0] = 0;
+    x2[1] = -45;
+    x2[2] = -5;
+    x2[3] = -128;
+    int value1 = value255(x1);
+    int value2 = value255(x2);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = abs_compare255(x1, x2);
     free255(x2);
     free255(x1);
     if (result != 1)
@@ -328,7 +429,12 @@ int main(int narg, char **args) {
     TEST(new255);
     TEST(compare_equal255);
     TEST(compare_less255);
+    TEST(compare_another_less255);
     TEST(compare_more255);
+    TEST(abs_compare255);
+    TEST(same_sign_abs_compare255);
+    TEST(another_abs_compare255);
+    TEST(third_abs_compare255);
     TEST(add255);
     TEST(subtract255);
     TEST(nonzero255);
