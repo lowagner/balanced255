@@ -22,7 +22,60 @@ int test_new255() {
     long long int result = value255(x);
     printf("recalculated result: %lld\n", result);
     free255(x);
-    return (result != value);
+    if (result != value)
+        return 1;
+    return 0;
+}
+
+int test_compare_equal255() {
+    int value1 = 1234;
+    int value2 = 1234;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != 0)
+        return 1;
+    return 0;
+}
+
+int test_compare_less255() {
+    int value1 = -1234;
+    int value2 = 1234;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != -1)
+        return 1;
+    return 0;
+}
+
+int test_compare_more255() {
+    int value1 = 14;
+    int value2 = 100234;
+    balanced255 x1 = new255(value1);
+    printf("internal representation of x1, should be equal to %d:\n ", value1);
+    print255(x1);
+    balanced255 x2 = new255(value2);
+    printf("internal representation of x2, should be equal to %d:\n ", value2);
+    print255(x2);
+    int result = compare255(x1, x2);
+    free255(x2);
+    free255(x1);
+    if (result != 1)
+        return 1;
+    return 0;
 }
 
 int test_add255() {
@@ -42,7 +95,9 @@ int test_add255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result != value1+value2);
+    if (result != value1+value2)
+        return 1;
+    return 0;
 }
 
 int test_subtract255() {
@@ -62,7 +117,9 @@ int test_subtract255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result != value1-value2);
+    if (result != value1-value2)
+        return 1;
+    return 0;
 }
 
 int test_nonzero255() {
@@ -70,7 +127,9 @@ int test_nonzero255() {
     int result = is_nonzero255(x); 
     print255(x);
     free255(x);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_zero255() {
@@ -78,7 +137,9 @@ int test_zero255() {
     int result = is_zero255(x); 
     print255(x);
     free255(x);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_add_to_zero255() {
@@ -95,7 +156,9 @@ int test_add_to_zero255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_allocation255() {
@@ -104,7 +167,9 @@ int test_allocation255() {
     print255(x);
     int length = length255(x);
     free255(x);
-    return (length != 3);
+    if (length != 3)
+        return 1;
+    return 0;
 }
 
 int test_decrement255() {
@@ -116,7 +181,9 @@ int test_decrement255() {
     print255(x);
     long long int value = value255(x);
     free255(x);
-    return (value != -8290688);
+    if (value != -8290688)
+        return 1;
+    return 0;
 }
 
 int test_increment255() {
@@ -128,7 +195,9 @@ int test_increment255() {
     print255(x);
     long long int value = value255(x);
     free255(x);
-    return (value != 128);
+    if (value != 128)
+        return 1;
+    return 0;
 }
 
 int test_zero_increment255() {
@@ -140,7 +209,9 @@ int test_zero_increment255() {
     print255(x);
     long long int value = value255(x);
     free255(x);
-    return (value != 1);
+    if (value != 1)
+        return 1;
+    return 0;
 }
 
 int test_equality255() {
@@ -153,7 +224,9 @@ int test_equality255() {
     free255(y2);
     free255(y1);
     free255(x);
-    return (result != 1);
+    if (result != 1)
+        return 1;
+    return 0;
 }
 
 int test_multiply255() {
@@ -176,7 +249,9 @@ int test_multiply255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_another_multiply255() {
@@ -200,7 +275,9 @@ int test_another_multiply255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_drop_tail255() {
@@ -233,7 +310,9 @@ int test_drop_tail255() {
     free255(x3);
     free255(x2);
     free255(x1);
-    return (result == 0);
+    if (result == 0)
+        return 1;
+    return 0;
 }
 
 int test_print_decimal255() {
@@ -247,6 +326,9 @@ int test_print_decimal255() {
 
 int main(int narg, char **args) {
     TEST(new255);
+    TEST(compare_equal255);
+    TEST(compare_less255);
+    TEST(compare_more255);
     TEST(add255);
     TEST(subtract255);
     TEST(nonzero255);

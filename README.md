@@ -64,5 +64,7 @@ the positivity/negativity of their most significant digit, which is what these f
 ## TODO
 
 * fast multiplication for larger numbers?
-* \*= algorithm
-* print\_decimal255 for very large numbers
+* print255\_as\_decimal for very large numbers
+* division / algorithm
+* mod % algorithm
+* gcd

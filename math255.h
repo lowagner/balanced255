@@ -1,6 +1,8 @@
 #pragma once
 #include "config255.h"
 
+int compare255(balanced255 a, balanced255 b);
+
 int is_zero255(balanced255 a);
 int is_nonzero255(balanced255 a);
 int is_positive255(balanced255 a);
