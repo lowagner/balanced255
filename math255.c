@@ -111,7 +111,6 @@ int get_required_space_multiply255(balanced255 a, balanced255 b) {
 }
 
 balanced255 multiply255(balanced255 a, balanced255 b) {
-    // grade school algorithm follows...
     int head_length;
     balanced255 partial_sum;
     {
@@ -137,5 +136,33 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
     balanced255 head = allocate255(head_length);
     memset(head, 0, head_length*sizeof(int8_t));
     unsafe255_gradeschool_multiply_nonzero255(head, partial_sum, a, b);
+    return head;
+}
+
+balanced255 quotient_remainder255(balanced255 a, balanced255 b) {
+    // a / b, set a equal to the remainder, and return a new balanced255 corresponding to the quotient.
+    if (is_zero255(b)) {
+        fprintf(stderr, "division by zero in quotient_remainder255\n");
+        balanced255 result = allocate255(1);
+        *result = -128;
+        *a = -128;
+        return result;
+    }
+    if (abs_compare255(a, b) == -1) { // |a| < |b|
+        balanced255 result = allocate255(1);
+        // TODO: may want to flip the sign of a, depending on sign of b and sign of a
+        *result = -128; 
+        return result;
+    }
+    int head_length;
+    {
+        int len_a, len_b;
+        len_a = length255(a);
+        len_b = length255(b);
+        head_length = len_a - len_b + 2;
+    }
+    balanced255 head = allocate255(head_length);
+    *head = -128;
+    fprintf(stderr, "not implemented yet.\n");
     return head;
 }

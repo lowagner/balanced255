@@ -9,3 +9,4 @@ void increment255(balanced255 *aptr);
 void decrement255(balanced255 *aptr);
 
 balanced255 multiply255(balanced255 a, balanced255 b);
+balanced255 quotient_remainder255(balanced255 a, balanced255 b);

@@ -416,6 +416,37 @@ int test_drop_tail255() {
     return 0;
 }
 
+int test_divide255() {
+    balanced255 N = allocate255(7);
+    N[0] = 127;
+    N[1] = 0;
+    N[2] = -100;
+    N[3] = 10;
+    N[4] = 0;
+    N[5] = 5;
+    N[6] = -128;
+    balanced255 D = allocate255(4);
+    D[0] = 15;
+    D[1] = 0;
+    D[2] = 2;
+    D[3] = -128;
+    printf("initial internal representation of N = 5391178858252:\n ");
+    print255(N);
+    printf("internal representation of D = 130065:\n ");
+    print255(D);
+    balanced255 Q = quotient_remainder255(N, D);
+    printf("internal representation of Q = 41449881:\n ");
+    print255(Q);
+    printf("internal representation of R = 85987:\n ");
+    print255(N);
+
+    free255(Q);
+    free255(D);
+    free255(N);
+    // TODO actual test
+    return 0;
+}
+
 int test_print_decimal255() {
     int value = 12342342;
     printf("value is %d\n", value);
@@ -449,6 +480,7 @@ int main(int narg, char **args) {
     TEST(another_multiply255);
     TEST(drop_tail255);
     TEST(print_decimal255);
+    TEST(divide255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }
