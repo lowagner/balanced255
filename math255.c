@@ -117,13 +117,13 @@ int get_required_space_multiply255(balanced255 a, balanced255 b) {
 }
 
 balanced255 multiply255(balanced255 a, balanced255 b) {
-    int head_length;
+    int result_length;
     balanced255 partial_sum;
     {
         int len_a, len_b;
         len_a = length255(a);
         len_b = length255(b);
-        head_length = len_a + len_b;
+        result_length = len_a + len_b;
         if (len_a < len_b) {
             // swap a<=>b, put the larger sized element first.
             balanced255 c = b;
@@ -139,10 +139,11 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
         *result = -128;
         return result;
     }
-    balanced255 head = allocate255(head_length);
-    memset(head, 0, head_length*sizeof(int8_t));
-    unsafe255_gradeschool_multiply_nonzero255(head, partial_sum, a, b);
-    return head;
+    balanced255 result = allocate255(result_length);
+    memset(result, 0, result_length*sizeof(int8_t));
+    result[result_length-1] = -128;
+    unsafe255_gradeschool_multiply_nonzero255(result, partial_sum, a, b);
+    return result;
 }
 
 balanced255 quotient_remainder255(balanced255 numerator, balanced255 denominator) {

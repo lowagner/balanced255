@@ -10,12 +10,12 @@ void unsafe255_from_int(balanced255 a, int carry) {
 }
 
 void unsafe255_add_int(balanced255 a, int carry) {
-    // a is nonzero, add carry.  a should be preallocated.
-    while (carry) {
+    // a is (possibly) nonzero, add carry.  a should be preallocated.
+    while (*a != -128) {
         carry += (int8_t)*a;
         *a++ = carry_next_digit255(&carry);
     }
-    *a = -128;
+    unsafe255_from_int(a, carry);
 }
 
 void unsafe255_from255_plus_int(balanced255 a, balanced255 b, int carry) {
@@ -66,10 +66,8 @@ void unsafe255_multiply255_with_int(balanced255 a, balanced255 b, int multiplier
     // multiply b with multiplier, put into a (preallocated)
     int carry = 0;
     while (1) {
-        if (*b == -128) {
-            unsafe255_from_int(a, carry);
-            break;
-        }
+        if (*b == -128)
+            return unsafe255_from_int(a, carry);
         carry += (int8_t)(*b++) * multiplier;
         *a++ = carry_next_digit255(&carry);
     }
