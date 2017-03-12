@@ -435,9 +435,9 @@ int test_divide255() {
     printf("internal representation of D = 130065:\n ");
     print255(D);
     balanced255 Q = quotient_remainder255(N, D);
-    printf("internal representation of Q = 41449881:\n ");
+    printf("internal representation of quotient (N/D) = 41449881:\n ");
     print255(Q);
-    printf("internal representation of R = 85987:\n ");
+    printf("internal representation of remainder (N%%D) = 85987:\n ");
     print255(N);
 
     free255(Q);

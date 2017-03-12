@@ -68,6 +68,12 @@ balanced255 subtract255(balanced255 a, balanced255 b) {
     }
 }
 
+balanced255 negate255(balanced255 a) {
+    while (*a != -128) {
+        *a++ *= -1;
+    }
+}
+
 void increment255(balanced255 *aptr) {
     balanced255 a = *aptr;
     // worst case cascade will require a realloc
@@ -139,30 +145,47 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
     return head;
 }
 
-balanced255 quotient_remainder255(balanced255 a, balanced255 b) {
-    // a / b, set a equal to the remainder, and return a new balanced255 corresponding to the quotient.
-    if (is_zero255(b)) {
-        fprintf(stderr, "division by zero in quotient_remainder255\n");
-        balanced255 result = allocate255(1);
-        *result = -128;
-        *a = -128;
-        return result;
+balanced255 quotient_remainder255(balanced255 numerator, balanced255 denominator) {
+    // numerator / denominator, set a equal to the remainder, and return a new balanced255 corresponding to the quotient.
+    if (length255(denominator) == 2) {
+        if (denominator[0] == 0) {
+            fprintf(stderr, "division by zero in quotient_remainder255\n");
+            balanced255 result = allocate255(1);
+            *result = -128;
+            *numerator = -128;
+            return result;
+        } else if (denominator[0] == 1) {
+            balanced255 result = copy255(numerator);
+            *numerator = -128;
+            return result;
+        } else if (denominator[0] == -1) {
+            balanced255 result = negate255(copy255(numerator));
+            *numerator = -128;
+            return result;
+        }
     }
-    if (abs_compare255(a, b) == -1) { // |a| < |b|
-        balanced255 result = allocate255(1);
-        // TODO: may want to flip the sign of a, depending on sign of b and sign of a
-        *result = -128; 
-        return result;
+    int negative_numerator = 0;
+    if (is_negative255(numerator)) {
+        negative_numerator = 1;
+        negate255(numerator);
     }
-    int head_length;
-    {
-        int len_a, len_b;
-        len_a = length255(a);
-        len_b = length255(b);
-        head_length = len_a - len_b + 2;
+    int negative_denominator = 0;
+    if (is_negative255(denominator)) {
+        negative_denominator = 1;
+        negate255(denominator);
     }
-    balanced255 head = allocate255(head_length);
-    *head = -128;
-    fprintf(stderr, "not implemented yet.\n");
-    return head;
+    balanced255 quotient = unsafe_quotient_remainder255(numerator, denominator);
+    // numerator is now the remainder:
+    // N/D = Q rem R
+    // +/+ = + rem +
+    // +/- = - rem +
+    // -/+ = - rem -
+    // -/- = + rem -
+    if (negative_numerator) {
+        negate255(numerator);
+        if (!negative_denominator)
+            negate255(quotient);
+    } else if (negative_denominator)
+        negate255(quotient);
+    return quotient;
 }

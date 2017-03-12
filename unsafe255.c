@@ -1,4 +1,6 @@
 #include "balanced255.h"
+#include "allocate255.h"
+#include <string.h>
 
 void unsafe255_from_int(balanced255 a, int carry) {
     // a is zero, add carry.  a should be preallocated.
@@ -91,4 +93,28 @@ void unsafe255_gradeschool_multiply_nonzero255(
         ++b;
         ++result;
     }
+}
+
+balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 denominator) {
+    // denominator must not be zero, also numerator and denominator should be positive;
+    if (compare255(numerator, denominator) < 0) { // a < b
+        balanced255 result = allocate255(1);
+        *result = -128; 
+        return result;
+    }
+    int quotient_length;
+    balanced255 numerator_tail;
+    {
+        int len_numerator, len_denominator;
+        len_numerator = length255(numerator);
+        numerator_tail = numerator + len_numerator - 2;
+        len_denominator = length255(denominator);
+        quotient_length = len_numerator - len_denominator + 2;
+    }
+    balanced255 quotient = allocate255(quotient_length);
+    memset(quotient, 0, (quotient_length-1)*sizeof(int8_t));
+    quotient[quotient_length-1] = -128;
+    balanced255 quotient_tail = quotient+quotient_length-2;
+    fprintf(stderr, "not implemented yet.\n");
+    return quotient;
 }
