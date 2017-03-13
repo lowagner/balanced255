@@ -437,13 +437,17 @@ int test_divide255() {
     balanced255 Q = quotient_remainder255(N, D);
     printf("internal representation of quotient (N/D) = 41449881:\n ");
     print255(Q);
+    int value_Q = value255(Q);
     printf("internal representation of remainder (N%%D) = 85987:\n ");
     print255(N);
-
+    int value_R = value255(N);
     free255(Q);
     free255(D);
     free255(N);
-    // TODO actual test
+    if (value_Q != 41449881 || value_R != 85987) {
+        fprintf(stderr, "incorrect value(s) for remainder or quotient\n");
+        return 1;
+    }
     return 0;
 }
 
@@ -466,13 +470,17 @@ int test_another_divide255() {
     balanced255 Q = quotient_remainder255(N, D);
     printf("internal representation of quotient (N/D) = %d:\n ", value_N/value_D);
     print255(Q);
+    int value_Q = value255(Q);
     printf("internal representation of remainder (N%%D) = %d:\n ", value_N%value_D);
     print255(N);
-
+    int value_R = value255(N);
     free255(Q);
     free255(D);
     free255(N);
-    // TODO actual test
+    if (value_Q != value_N/value_D || value_R != value_N%value_D) {
+        fprintf(stderr, "incorrect value(s) for remainder or quotient\n");
+        return 1;
+    }
     return 0;
 }
 

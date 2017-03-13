@@ -2,6 +2,10 @@
 #include "allocate255.h"
 #include <string.h>
 
+int abs(int x) {
+    return (x < 0) ? -x : x;
+}
+
 void unsafe255_from_int(balanced255 a, int carry) {
     // a is zero, add carry.  a should be preallocated.
     while (carry)
@@ -94,9 +98,82 @@ void unsafe255_gradeschool_multiply_nonzero255(
     }
 }
 
+int unsafe_largest_int_multiple_and_subtract255(
+    balanced255 partial, balanced255 remainder, balanced255 denominator, int len_denominator) 
+{
+    // partial is some work space, find divider = remainder/divider
+    // why unsafe:  you must be able to assume the result (divider) is small enough to fit in an int.
+    int compare = compare255(remainder, denominator);
+    switch (compare) {
+        case -1: // remainder < denominator
+            return 0;
+        case 0: // remainder == denominator
+            *remainder = 0;
+            return 1;
+    }
+    int denominator_leading_value = denominator[len_denominator-2];
+    // find largest multiple of denominator smaller than current remainder
+    int divider = value255(remainder+len_denominator-2) / denominator_leading_value;
+    // value255 should not be more than 255*255 + 255, 
+    if (abs(divider) > 255) {
+        fprintf(stderr, "\n!!!\nimpossible digit found!!!  %d\n", divider);
+        return 0;
+    }
+    unsafe255_multiply255_with_int(partial, denominator, divider);
+    switch ((compare = compare255(partial, remainder))) {
+        case -1:
+            // partial < remainder
+            // need to add denominator to partial until > remainder, then subtract one.
+            // "restorative" division
+            do {
+                #if DEBUG > 9000
+                printf("partial was less than remainder, adding another denominator\n");
+                printing255(partial);
+                printf(" < ");
+                printing255(remainder);
+                printf("\n");
+                #endif
+                unsafe255_add255(partial, denominator);
+                ++divider;
+            } while ((compare = compare255(partial, remainder)) < 0);
+            if (compare == 0) {
+                *remainder = -128;
+                break;
+            }
+            unsafe255_subtract255(partial, denominator);
+            --divider;
+            unsafe255_subtract255(remainder, partial);
+            break;
+        case 0:
+            *remainder = -128;
+            break;
+        case 1:
+            // partial > remainder
+            // need to subtract denominator from partial until < remainder.
+            do {
+                #if DEBUG > 9000
+                printf("partial was greater than remainder, subtracting another denominator\n");
+                printing255(partial);
+                printf(" < ");
+                printing255(remainder);
+                printf("\n");
+                #endif
+                unsafe255_subtract255(partial, denominator);
+                --divider;
+            } while ((compare = compare255(partial, remainder)) > 0);
+            if (compare == 0) {
+                *remainder = -128;
+                break;
+            }
+            unsafe255_subtract255(remainder, partial);
+            break;
+    }
+    return divider;
+}
+
 balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 denominator) {
     // denominator must not be zero, also numerator and denominator should be positive;
-    if (compare255(numerator, denominator) < 0) { // a < b
+    if (compare255(numerator, denominator) < 0) { // numerator < denominator
         balanced255 result = allocate255(1);
         *result = -128; 
         return result;
@@ -104,8 +181,10 @@ balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 deno
     balanced255 remainder;
     balanced255 quotient;
     balanced255 quotient_tail;
+    balanced255 partial;
+    int len_denominator;
     {
-        int len_numerator, len_denominator;
+        int len_numerator;
         len_numerator = length255(numerator);
         len_denominator = length255(denominator);
         int quotient_length = len_numerator - len_denominator + 2;
@@ -116,6 +195,8 @@ balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 deno
         quotient[quotient_length-1] = -128;
         remainder = numerator + quotient_length - 2;
         quotient_tail = quotient+quotient_length-2;
+        partial = allocate255(len_denominator+1);
+        *partial = -128;
     }
     #if DEBUG > 9000
     printf("starting at numerator position (initial remainder):\n ");
@@ -125,6 +206,14 @@ balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 deno
     printf("full denominator:\n ");
     print255(denominator);
     #endif
-    fprintf(stderr, "not implemented yet.\n");
+    while (quotient_tail >= quotient) {
+        *quotient_tail = 0;
+        int divider = unsafe_largest_int_multiple_and_subtract255(partial, remainder--, denominator, len_denominator);
+        if (divider)
+            unsafe255_add_int(quotient_tail--, divider);
+        else
+            --quotient_tail;
+    }
+    free255(partial);
     return quotient;
 }
