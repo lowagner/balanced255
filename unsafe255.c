@@ -77,9 +77,6 @@ void unsafe255_gradeschool_multiply_nonzero255(
     balanced255 result, balanced255 partial_sum, balanced255 a, balanced255 b)
 {
     while (*b != -128) {
-        #if DEBUG > 9000
-        printf("multiplying in %d:\n ", (int)(*b));
-        #endif
         if (*b) {
             unsafe255_multiply255_with_int(partial_sum, a, *b);
             #if DEBUG > 9000
@@ -87,6 +84,10 @@ void unsafe255_gradeschool_multiply_nonzero255(
             print255(partial_sum);
             #endif
             unsafe255_add255(result, partial_sum);
+        } 
+        else if (*result == -128) {
+            *result = 0;
+            *(result+1) = -128;
         }
         ++b;
         ++result;
@@ -100,19 +101,30 @@ balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 deno
         *result = -128; 
         return result;
     }
-    int quotient_length;
-    balanced255 numerator_tail;
+    balanced255 remainder;
+    balanced255 quotient;
+    balanced255 quotient_tail;
     {
         int len_numerator, len_denominator;
         len_numerator = length255(numerator);
-        numerator_tail = numerator + len_numerator - 2;
         len_denominator = length255(denominator);
-        quotient_length = len_numerator - len_denominator + 2;
+        int quotient_length = len_numerator - len_denominator + 2;
+        // if N = [ 2, 3, 4, 5, -128 ]  -> length 5
+        // and D= [ 2, 3, 4, -128 ] -> length 4
+        // then Q = [ _, _, -128 ] -> length 3
+        quotient = allocate255(quotient_length);
+        quotient[quotient_length-1] = -128;
+        remainder = numerator + quotient_length - 2;
+        quotient_tail = quotient+quotient_length-2;
     }
-    balanced255 quotient = allocate255(quotient_length);
-    memset(quotient, 0, (quotient_length-1)*sizeof(int8_t));
-    quotient[quotient_length-1] = -128;
-    balanced255 quotient_tail = quotient+quotient_length-2;
+    #if DEBUG > 9000
+    printf("starting at numerator position (initial remainder):\n ");
+    print255(remainder);
+    printf("full numerator:\n ");
+    print255(numerator);
+    printf("full denominator:\n ");
+    print255(denominator);
+    #endif
     fprintf(stderr, "not implemented yet.\n");
     return quotient;
 }

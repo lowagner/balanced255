@@ -140,8 +140,7 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
         return result;
     }
     balanced255 result = allocate255(result_length);
-    memset(result, 0, result_length*sizeof(int8_t));
-    result[result_length-1] = -128;
+    result[0] = -128;
     unsafe255_gradeschool_multiply_nonzero255(result, partial_sum, a, b);
     return result;
 }
