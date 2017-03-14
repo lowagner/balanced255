@@ -69,9 +69,11 @@ balanced255 subtract255(balanced255 a, balanced255 b) {
 }
 
 balanced255 negate255(balanced255 a) {
+    balanced255 a0 = a;
     while (*a != -128) {
         *a++ *= -1;
     }
+    return a0;
 }
 
 void increment255(balanced255 *aptr) {
@@ -147,22 +149,23 @@ balanced255 multiply255(balanced255 a, balanced255 b) {
 
 balanced255 quotient_remainder255(balanced255 numerator, balanced255 denominator) {
     // numerator / denominator, set a equal to the remainder, and return a new balanced255 corresponding to the quotient.
-    if (length255(denominator) == 2) {
-        if (denominator[0] == 0) {
+    switch (length255(denominator)) {
+        case 1: // denominator is zero
             fprintf(stderr, "division by zero in quotient_remainder255\n");
             balanced255 result = allocate255(1);
             *result = -128;
             *numerator = -128;
             return result;
-        } else if (denominator[0] == 1) {
-            balanced255 result = copy255(numerator);
-            *numerator = -128;
-            return result;
-        } else if (denominator[0] == -1) {
-            balanced255 result = negate255(copy255(numerator));
-            *numerator = -128;
-            return result;
-        }
+        case 2:
+            if (denominator[0] == 1) {
+                balanced255 result = copy255(numerator);
+                *numerator = -128;
+                return result;
+            } else if (denominator[0] == -1) {
+                balanced255 result = negate255(copy255(numerator));
+                *numerator = -128;
+                return result;
+            }
     }
     int negative_numerator = 0;
     if (is_negative255(numerator)) {

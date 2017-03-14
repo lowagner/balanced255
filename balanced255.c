@@ -47,6 +47,7 @@ balanced255 copy255(balanced255 a) {
     int len_a = length255(a);
     balanced255 result = allocate255(len_a);
     memcpy(result, a, len_a*sizeof(int8_t));
+    return result;
 }
 
 void free255(balanced255 a) {

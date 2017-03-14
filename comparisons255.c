@@ -1,9 +1,5 @@
 #include "balanced255.h"
 
-static inline int abs(int a) {
-    return (a < 0) ? -a : a;
-}
-
 int is_zero255(balanced255 a) {
     while (*a != -128) {
         if (*a++ != 0)
@@ -109,7 +105,10 @@ int abs_compare255(balanced255 a, balanced255 b) {
             return -1;
         else
             return 1;
-        printf("sign a, b = %d, %d\n", a_sign, b_sign);
+        #if DEBUG > 9000
+        fprintf(stderr, "in abs_compare255\n");
+        fprintf(stderr, "sign a, b = %d, %d\n", a_sign, b_sign);
+        #endif
         
         while (--a_tail, --b_tail, a_tail >= a) {
             abs_a = *a_tail*a_sign;

@@ -4,7 +4,7 @@ CC=gcc -m64
 C_ENDING=c
 DEFINES=
 MAINS=main
-MAINS_G=main test
+MAINS_G=main test long_test
 DEBUGLEVEL=5
 DEBUGLEVEL_G=9001
 CFLAGS_COMMON=-std=c11 $(DEFINES:%=-D%)

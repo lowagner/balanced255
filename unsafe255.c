@@ -2,10 +2,6 @@
 #include "allocate255.h"
 #include <string.h>
 
-int abs(int x) {
-    return (x < 0) ? -x : x;
-}
-
 void unsafe255_from_int(balanced255 a, int carry) {
     // a is zero, add carry.  a should be preallocated.
     while (carry)
@@ -103,23 +99,37 @@ int unsafe_largest_int_multiple_and_subtract255(
 {
     // partial is some work space, find divider = remainder/divider
     // why unsafe:  you must be able to assume the result (divider) is small enough to fit in an int.
-    int compare = compare255(remainder, denominator);
+    #if DEBUG > 9000
+    fprintf(stderr, "\nstarting unsafe largest int multiple, remainder and denominator follow:\n");
+    fprint255(stderr, remainder);
+    fprint255(stderr, denominator);
+    #endif
+    int compare = abs_compare255(remainder, denominator);
     switch (compare) {
-        case -1: // remainder < denominator
+        case -1: // |remainder| < |denominator|
             return 0;
-        case 0: // remainder == denominator
+        case 0: // |remainder| == |denominator|
+            if (!compare255(remainder, denominator)) { // same signs
+                *remainder = 0;
+                return 1;
+            }
             *remainder = 0;
-            return 1;
+            return -1;
     }
-    int denominator_leading_value = denominator[len_denominator-2];
     // find largest multiple of denominator smaller than current remainder
-    int divider = value255(remainder+len_denominator-2) / denominator_leading_value;
+    int divider = value255(remainder+len_denominator-2) / denominator[len_denominator-2];
+    // will adjust divider if this is too big or small.
+
     // value255 should not be more than 255*255 + 255, 
     if (abs(divider) > 255) {
         fprintf(stderr, "\n!!!\nimpossible digit found!!!  %d\n", divider);
         return 0;
     }
     unsafe255_multiply255_with_int(partial, denominator, divider);
+    #if DEBUG > 9000
+    fprintf(stderr, "got divider: %d, so partial is now:\n", divider);
+    fprint255(stderr, partial);
+    #endif
     switch ((compare = compare255(partial, remainder))) {
         case -1:
             // partial < remainder
@@ -215,11 +225,23 @@ balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 deno
     #endif
     while (quotient_tail >= quotient) {
         *quotient_tail = 0;
+        #if DEBUG > 9000
+        printf("current remainder: %lld\n", value255(remainder));
+        print255(remainder);
+        printf("current quotient tail: %lld\n", value255(quotient_tail));
+        print255(quotient_tail);
+        #endif
         int divider = unsafe_largest_int_multiple_and_subtract255(partial, remainder--, denominator, len_denominator);
         if (divider)
             unsafe255_add_int(quotient_tail--, divider);
         else
             --quotient_tail;
+        #if DEBUG > 9000
+        printf("after divider %d, remainder is: %lld\n", divider, value255(remainder+1));
+        print255(remainder+1);
+        printf("current quotient tail: %lld\n", value255(quotient_tail+1));
+        print255(quotient_tail+1);
+        #endif
     }
     free255(partial);
     return quotient;
