@@ -22,8 +22,8 @@ int length255(balanced255 a) {
 big_int value255(balanced255 a) {
     if (*a == -128)
         return 0;
-    long long int power = 1;
-    long long int value = (int8_t)*a++;
+    big_int power = 1;
+    big_int value = (int8_t)*a++;
     while (*a != -128) {
         power *= 255;
         value += power*(*a++);
