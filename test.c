@@ -517,9 +517,9 @@ int test_divisible255() {
 
 int test_print_decimal255() {
     int value = 12342342;
-    printf("value is %d\n", value);
     balanced255 a = new255(value);
-    fprinting255_as_decimal(stdout, a);
+    print255_as_decimal(a);
+    printf("the above value should be the same as %d\n", value);
     free255(a);
     return 0;
 }
@@ -551,6 +551,7 @@ int main(int narg, char **args) {
     TEST(divide255);
     TEST(another_divide255);
     TEST(divisible255);
+    TEST(print_decimal255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }
