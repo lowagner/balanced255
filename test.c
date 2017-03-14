@@ -519,7 +519,21 @@ int test_print_decimal255() {
     int value = 12342342;
     balanced255 a = new255(value);
     print255_as_decimal(a);
-    printf("the above value should be the same as %d\n", value);
+    printf("the above value should be the same as\n%d\n", value);
+    free255(a);
+    return 0;
+}
+
+int test_print_big_decimal255() {
+    int value = 1000000000;
+    balanced255 a = new255(value);
+    value *= 2; 
+    balanced255 b = new255(value);
+    balanced255 c = multiply255(a, b);
+    print255_as_decimal(c);
+    printf("the above value should be the same as\n2000000000000000000\n");
+    free255(c);
+    free255(b);
     free255(a);
     return 0;
 }
@@ -552,6 +566,7 @@ int main(int narg, char **args) {
     TEST(another_divide255);
     TEST(divisible255);
     TEST(print_decimal255);
+    TEST(print_big_decimal255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }
