@@ -173,13 +173,20 @@ int unsafe_largest_int_multiple_and_subtract255(
 
 balanced255 unsafe_quotient_remainder255(balanced255 numerator, balanced255 denominator) {
     // denominator must not be zero, also numerator and denominator should be positive;
-    if (compare255(numerator, denominator) < 0) { // numerator < denominator
-        balanced255 result = allocate255(1);
-        *result = -128; 
-        return result;
+    balanced255 quotient;
+    switch (compare255(numerator, denominator)) {
+        case -1: // numerator < denominator
+            quotient = allocate255(1);
+            *quotient = -128; 
+            return quotient;
+        case 0: // numerator == denominator
+            quotient = allocate255(2);
+            quotient[0] = 1;
+            quotient[1] = -128; 
+            *numerator = -128; // zero numerator
+            return quotient;
     }
     balanced255 remainder;
-    balanced255 quotient;
     balanced255 quotient_tail;
     balanced255 partial;
     int len_denominator;

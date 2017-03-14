@@ -183,9 +183,13 @@ balanced255 quotient_remainder255(balanced255 numerator, balanced255 denominator
     // -/- = + rem -
     if (negative_numerator) {
         negate255(numerator);
-        if (!negative_denominator)
+        if (negative_denominator)
+            negate255(denominator);
+        else
             negate255(quotient);
-    } else if (negative_denominator)
+    } else if (negative_denominator) {
+        negate255(denominator);
         negate255(quotient);
+    }
     return quotient;
 }

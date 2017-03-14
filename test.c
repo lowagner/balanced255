@@ -484,6 +484,46 @@ int test_another_divide255() {
     return 0;
 }
 
+int test_many255() {
+    for (int i=-1000; i<100000; ++i) {
+        for (int j=-10000; j<10000005; ++j) {
+            balanced255 N = new255(i); 
+            balanced255 D = new255(j); 
+            balanced255 R = copy255(N);
+            balanced255 Q = quotient_remainder255(R, D);
+            balanced255 X = multiply255(Q, D); // multiply quotient and divider
+            balanced255 S = add255(X, R); // add remainder
+            if (compare255(N, S)) {
+                fprintf(stderr, "failed to recombine quotient and remainder into numerator\n");
+                fprintf(stderr, "N = %d, D = %d, got %lld rem %lld\n", i, j, value255(Q), value255(R));
+                fprinting255(stderr, N); 
+                fprintf(stderr, " != ");
+                fprinting255(stderr, Q); 
+                fprinting255(stderr, D); 
+                fprintf(stderr, " + ");
+                fprinting255(stderr, R); 
+                fprintf(stderr, "; got ");
+                fprint255(stderr, S); 
+            
+                free255(S);
+                free255(X);
+                free255(Q);
+                free255(R);
+                free255(D);
+                free255(N);
+                return 1;
+            }
+            free255(S);
+            free255(X);
+            free255(Q);
+            free255(R);
+            free255(D);
+            free255(N);
+        }
+    }
+    return 0;
+}
+
 int test_print_decimal255() {
     int value = 12342342;
     printf("value is %d\n", value);
@@ -519,6 +559,7 @@ int main(int narg, char **args) {
     TEST(print_decimal255);
     TEST(divide255);
     TEST(another_divide255);
+    TEST(many255);
     printf("all tests passed, good work and go home.\n");
     return 0;
 }
