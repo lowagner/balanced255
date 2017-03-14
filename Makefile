@@ -29,7 +29,7 @@ C_FILES=$(HEADED:%=%.$(C_ENDING)) $(NON_HEADED:%=%.$(C_ENDING))
 
 .PHONY: clean, debug, clean-g, clean-docs, all, test
 
-all: $(MAINS:%=%.$(EXECUTABLE)) test.g$(EXECUTABLE)
+all: $(MAINS:%=%.$(EXECUTABLE)) $(MAINS_G:%=%.g$(EXECUTABLE))
 
 .PRECIOUS: $(OBJECTS) $(MAINS:%=$(BUILD_DIR)/%.o) $(OBJECTS_G) $(MAINS_G:%=$(BUILD_DIR_G)/%.o)
 

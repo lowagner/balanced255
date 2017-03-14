@@ -31,8 +31,8 @@ void fprinting255_as_decimal(FILE *f, balanced255 a0) {
     // use long division with remainders.
     int max_length = length255(a0);
     int *base10000 = (int*)calloc(max_length, sizeof(int));
-    balanced255 a = copy255(a0);
     balanced255 ten_thousand = new255(10000);
+    balanced255 a = copy255(a0);
     if (is_negative255(a)) {
         negate255(a);
         fprintf(f, "-");
@@ -46,9 +46,8 @@ void fprinting255_as_decimal(FILE *f, balanced255 a0) {
         if (length255(a) == 1)
             break;
     }
-    free255(ten_thousand);
     free255(a);
-    //
+    free255(ten_thousand);
     char buffer[5];
     buffer[0] = '0' + base10000[max_index]/1000;
     buffer[1] = '0' + (base10000[max_index]/100)%10;
