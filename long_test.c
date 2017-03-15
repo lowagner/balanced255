@@ -8,7 +8,7 @@
         printf("test_"#x" passed\n\n");
 
 int test_many255() {
-    for (int i=-10; i<100000; ++i) {
+    for (int i=-10; i<10000; ++i) {
         for (int j=-abs(i)-1; j<abs(i)+1; ++j) {
             fprintf(stderr, "N = %d, D = %d,\n", i, j);
             balanced255 N = new255(i); 
